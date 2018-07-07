@@ -22,8 +22,9 @@ import javax.imageio.ImageIO;
  * @author kudi
  */
 public class GunWorldPlayer extends GunWorldEntity{
-    int yVel;
+    int yVel, xSlide;
     int playerNum;
+    int gunCooldown;
     boolean direction = false; // true = left, false = right;
     boolean isFalling;
     boolean isJumping;
@@ -50,22 +51,6 @@ public class GunWorldPlayer extends GunWorldEntity{
     
     public void paint(Graphics g)
     {
-        /*
-        if(isFalling || (isJumping && yVel > 0))
-        {
-            BufferedImage bi = i.getSubimage(8, 0, 8, 12);
-            g.drawImage(bi, x, y, width, height, null);
-        }
-        else if(isJumping && yVel <= 0)
-        {
-            BufferedImage bi = i.getSubimage(0, 0, 8, 12);
-            g.drawImage(bi, x, y, width, height, null);
-        }
-        else
-        {
-            BufferedImage bi = i.getSubimage(((animatedFrames / 25) % 2) * 8, 0, 8, 12);
-            g.drawImage(bi, x, y, width, height, null);
-        }*/
         for(int i = 0; i < playerDust.size(); i++)
         {
             this.playerDust.get(i).paint(g);
@@ -106,6 +91,8 @@ public class GunWorldPlayer extends GunWorldEntity{
             }
         }
         
+        this.x += this.xSlide;
+        
         if((isOnPlatform || isOnHardPlatform) && (this.x > this.platMax || this.x + this.width < this.platMin))
         {
             this.isOnPlatform = false;
@@ -133,11 +120,11 @@ public class GunWorldPlayer extends GunWorldEntity{
         {
             if(ents.get(i).id == EntityID.Wall && ((GunWorldWall)(ents.get(i))).blockDetect(this))
             {
-                if(keys[0 + (maxKeys * (playerNum - 1))] == true)
+                if(keys[0 + (maxKeys * (playerNum - 1))] || (xSlide < 0 && !keys[2 + (maxKeys * (playerNum - 1))]))
                 {
                     this.x = ents.get(i).width + ents.get(i).x;
                 }
-                else if(keys[2 + (maxKeys * (playerNum - 1))] == true)
+                else if(keys[2 + (maxKeys * (playerNum - 1))] == true || (xSlide > 0 && !keys[0 + (maxKeys * (playerNum - 1))]))
                 {
                     this.x = ents.get(i).x - this.width;
                 }
@@ -194,7 +181,8 @@ public class GunWorldPlayer extends GunWorldEntity{
                 }
             }
             
-            if(ents.get(i).id == EntityID.Gun && this.x < ents.get(i).x + ents.get(i).width && this.x + this.width > ents.get(i).x && this.y < ents.get(i).y + ents.get(i).height && this.y + this.height > ents.get(i).y)
+            //Obtaining the gun
+            if(ents.get(i).id == EntityID.Gun && this.x < ents.get(i).x + ents.get(i).width && this.x + this.width > ents.get(i).x && this.y < ents.get(i).y + ents.get(i).height && this.y + this.height > ents.get(i).y && this.playerGun == null)
             {
                 if(((GunWorldGun)(ents.get(i))).gunID == GunID.pistol)
                 {
@@ -204,6 +192,11 @@ public class GunWorldPlayer extends GunWorldEntity{
                 else if(((GunWorldGun)(ents.get(i))).gunID == GunID.shotgun)
                 {
                     this.playerGun = new GunWorldShotgun(this.x + (this.width / 2), this.y + (this.height / 4), true);
+                    this.playerGun.playerHolding = this;
+                }
+                else if(((GunWorldGun)(ents.get(i))).gunID == GunID.machineGun)
+                {
+                    this.playerGun = new GunWorldMachineGun(this.x + (this.width / 2), this.y + (this.height / 4), true);
                     this.playerGun.playerHolding = this;
                 }
                 ents.remove(i);
@@ -231,6 +224,18 @@ public class GunWorldPlayer extends GunWorldEntity{
             this.yVel += 4;
         }
         
+        if(this.xSlide != 0)
+        {
+            if(this.xSlide > 0)
+            {
+                this.xSlide--;
+            }
+            else if(this.xSlide < 0)
+            {
+                this.xSlide++;
+            }
+        }
+        
         if(keys[1 + (maxKeys * (playerNum - 1))] == true && isOnPlatform)
         {
             isOnPlatform = false;
@@ -240,14 +245,29 @@ public class GunWorldPlayer extends GunWorldEntity{
         if(this.playerGun != null)
         {
             this.playerGun.update(keys, ents);
-            if(keys[4 + (maxKeys * (playerNum - 1))] && this.playerGun.isShot == false)
+            if(this.playerGun.gunID == GunID.machineGun)
             {
-                this.playerGun.shoot(direction);
-                this.playerGun.isShot = true;
+                if(keys[4 + (maxKeys * (playerNum - 1))])
+                {
+                    this.playerGun.shoot(direction);
+                    this.playerGun.isShot = true;
+                }
+                else
+                {
+                    this.playerGun.isShot = false;
+                }
             }
-            else if(!keys[4 + (maxKeys * (playerNum - 1))])
+            else
             {
-                this.playerGun.isShot = false;
+                if(keys[4 + (maxKeys * (playerNum - 1))] && this.playerGun.isShot == false)
+                {
+                    this.playerGun.shoot(direction);
+                    this.playerGun.isShot = true;
+                }
+                else if(!keys[4 + (maxKeys * (playerNum - 1))])
+                {
+                    this.playerGun.isShot = false;
+                }
             }
         }
         
@@ -258,6 +278,11 @@ public class GunWorldPlayer extends GunWorldEntity{
             {
                 playerDust.remove(i);
             }
+        }
+        
+        if(this.gunCooldown != 0)
+        {
+            this.gunCooldown--;
         }
     }
     

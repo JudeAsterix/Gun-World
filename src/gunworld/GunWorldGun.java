@@ -51,11 +51,20 @@ public abstract class GunWorldGun extends GunWorldEntity{
         {
             for(int j = bullets.size() - 1; j >= 0; j--)
             {
-                if(bullets.get(j).isHit(ents.get(i)))
+                if(bullets.get(j).isHit(ents.get(i)) && ((GunWorldPlayer)(ents.get(i))).gunCooldown == 0)
                 {
                     ((GunWorldPlayer)(ents.get(i))).yVel = -20;
                     ((GunWorldPlayer)(ents.get(i))).isJumping = true;
+                    if(bullets.get(j).xVelocity < 0)
+                    {
+                        ((GunWorldPlayer)(ents.get(i))).xSlide = -10;
+                    }
+                    else
+                    {
+                        ((GunWorldPlayer)(ents.get(i))).xSlide = 10;
+                    }
                     bullets.remove(j);
+                    ((GunWorldPlayer)(ents.get(i))).gunCooldown = 60;
                 }
             }
             i--;

@@ -30,6 +30,7 @@ public class GunWorldObjects {
         entities.add(new GunWorldHardPlatform(500, 200, 200, 50));
         entities.add(new GunWorldPistol(200, 200, false));
         entities.add(new GunWorldShotgun(400, 400, false));
+        entities.add(new GunWorldMachineGun(500, 100, false));
         entities.add(new GunWorldCeiling(0,0, 800, 50));
         entities.add(new GunWorldPlayer(1));
         entities.add(new GunWorldPlayer(2));

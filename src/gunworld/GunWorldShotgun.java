@@ -60,14 +60,16 @@ public class GunWorldShotgun extends GunWorldGun{
         {
             for(int i = 0; i < 5; i++)
             {
-                this.bullets.add(new GunWorldBullet(this.x, this.y + this.height / 2, 1, -(30 + Math.round((int)(Math.random() * 6)) - 3), Math.round((int)(Math.random() * 5)) - 2));
+                this.playerHolding.xSlide = 10;
+                this.bullets.add(new GunWorldBullet(this.x, this.y + this.height / 2, 1, -(30 + Math.round((int)(Math.random() * 6)) - 3), Math.round((int)(Math.random() * 7)) - 3));
             }
         }
         else
         {
             for(int i = 0; i < 5; i++)
-            {            
-                this.bullets.add(new GunWorldBullet(this.x + this.width, this.y + this.height / 2, 1, (30 + Math.round((int)(Math.random() * 6)) - 3), Math.round((int)(Math.random() * 5)) - 2));
+            {  
+                this.playerHolding.xSlide = -10;          
+                this.bullets.add(new GunWorldBullet(this.x + this.width, this.y + this.height / 2, 1, (30 + Math.round((int)(Math.random() * 6)) - 3), Math.round((int)(Math.random() * 7)) - 3));
             }
         }
     }

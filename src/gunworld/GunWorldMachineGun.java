@@ -5,30 +5,27 @@
  */
 package gunworld;
 
-import java.awt.Graphics;
 import java.util.ArrayList;
 
-public class GunWorldPistol extends GunWorldGun{
-    
-    
-    public GunWorldPistol(int x, int y, boolean isEquipped)
+/**
+ *
+ * @author kudi
+ */
+public class GunWorldMachineGun extends GunWorldGun{
+
+    public GunWorldMachineGun(int x, int y, boolean isEquipped)
     {
-        super(x, y, 25, 25, isEquipped);
-        this.gunID = GunID.pistol;
-        isShot = true;
+        super(x, y, 60, 30, isEquipped);
+        this.gunID = GunID.machineGun;
+        isShot = false;
     }
     
-    public GunWorldGun deepCopy()
+    public GunWorldGun deepCopy() 
     {
-        return new GunWorldPistol(this.x, this.y, this.isEquipped);
+        return new GunWorldMachineGun(this.x, this.y, this.isEquipped);
     }
-    
-    public void paint(Graphics g)
-    {
-        super.paint(g);
-    }
-    
-    public void update(boolean[] keys, ArrayList<GunWorldEntity> ents)
+
+    public void update(boolean[] keys, ArrayList<GunWorldEntity> ents) 
     {
         if(!isEquipped)
         {
@@ -55,17 +52,18 @@ public class GunWorldPistol extends GunWorldGun{
         this.checkIfShot(ents);
     }
     
-    public void shoot(boolean direction)
+    public void shoot(boolean direction) 
     {
         if(direction)
         {
-            this.playerHolding.xSlide = 5;
-            this.bullets.add(new GunWorldBullet(this.x, this.y + this.height / 2, 1, -20, 0));
+            this.playerHolding.xSlide = 2;
+            this.bullets.add(new GunWorldBullet(this.x, this.y + this.height / 2, 1, -(30 + Math.round((int)(Math.random() * 6)) - 3), Math.round((int)(Math.random() * 7)) - 3));
         }
         else
         {
-            this.playerHolding.xSlide = -5;
-            this.bullets.add(new GunWorldBullet(this.x + this.width, this.y + this.height / 2, 1, 20, 0));
+            this.playerHolding.xSlide = -2;          
+            this.bullets.add(new GunWorldBullet(this.x + this.width, this.y + this.height / 2, 1, (30 + Math.round((int)(Math.random() * 6)) - 3), Math.round((int)(Math.random() * 7)) - 3));
         }
     }
+    
 }

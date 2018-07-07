@@ -15,13 +15,15 @@ import java.util.ArrayList;
  */
 public class GunWorldBullet extends GunWorldEntity{
     int direction;
-    int velocity;
+    int xVelocity;
+    int yVelocity;
     
-    public GunWorldBullet(int x, int y, int direction, int velocity)
+    public GunWorldBullet(int x, int y, int direction, int velocity, int xVelocity)
     {
         super(x, y, 5, 5, EntityID.Bullet);
         this.direction = direction;
-        this.velocity = velocity;
+        this.xVelocity = velocity;
+        this.yVelocity = xVelocity;
     }
 
     void paint(Graphics g) {
@@ -30,7 +32,8 @@ public class GunWorldBullet extends GunWorldEntity{
     }
 
     void update(boolean[] keys, ArrayList<GunWorldEntity> ents) {
-        x += direction * velocity;
+        x += direction * xVelocity;
+        y += yVelocity;
     }
     
     boolean isHit(GunWorldEntity gwe)
@@ -39,13 +42,13 @@ public class GunWorldBullet extends GunWorldEntity{
         {
             return(true);
         }
-        else if(velocity > 0)
+        else if(xVelocity > 0)
         {
-            return(this.x <= gwe.x && this.x + this.velocity > gwe.x && this.y + this.height > gwe.y && this.y < gwe.y + gwe.height);
+            return(this.x <= gwe.x && this.x + this.xVelocity > gwe.x && this.y + this.height > gwe.y && this.y < gwe.y + gwe.height);
         }
         else
         {
-            return(this.x + this.width >= gwe.x + gwe.width && this.x + this.width + this.velocity < gwe.x + gwe.width && this.y + this.height > gwe.y && this.y < gwe.y + gwe.height);
+            return(this.x + this.width >= gwe.x + gwe.width && this.x + this.width + this.xVelocity < gwe.x + gwe.width && this.y + this.height > gwe.y && this.y < gwe.y + gwe.height);
         }
     }
 }

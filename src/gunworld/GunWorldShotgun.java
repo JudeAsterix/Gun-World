@@ -8,19 +8,18 @@ package gunworld;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-public class GunWorldPistol extends GunWorldGun{
-    
-    
-    public GunWorldPistol(int x, int y, boolean isEquipped)
+public class GunWorldShotgun extends GunWorldGun{
+
+    public GunWorldShotgun(int x, int y, boolean isEquipped)
     {
-        super(x, y, 25, 25, isEquipped);
-        this.gunID = GunID.pistol;
+        super(x, y, 50, 25, isEquipped);
+        this.gunID = GunID.shotgun;
         isShot = false;
     }
     
     public GunWorldGun deepCopy()
     {
-        return new GunWorldPistol(this.x, this.y, this.isEquipped);
+        return new GunWorldShotgun(this.x, this.y, this.isEquipped);
     }
     
     public void paint(Graphics g)
@@ -59,11 +58,18 @@ public class GunWorldPistol extends GunWorldGun{
     {
         if(direction)
         {
-            this.bullets.add(new GunWorldBullet(this.x, this.y + this.height / 2, 1, -20, 0));
+            for(int i = 0; i < 5; i++)
+            {
+                this.bullets.add(new GunWorldBullet(this.x, this.y + this.height / 2, 1, -(30 + Math.round((int)(Math.random() * 6)) - 3), Math.round((int)(Math.random() * 5)) - 2));
+            }
         }
         else
         {
-            this.bullets.add(new GunWorldBullet(this.x + this.width, this.y + this.height / 2, 1, 20, 0));
+            for(int i = 0; i < 5; i++)
+            {            
+                this.bullets.add(new GunWorldBullet(this.x + this.width, this.y + this.height / 2, 1, (30 + Math.round((int)(Math.random() * 6)) - 3), Math.round((int)(Math.random() * 5)) - 2));
+            }
         }
     }
+    
 }

@@ -201,6 +201,11 @@ public class GunWorldPlayer extends GunWorldEntity{
                     this.playerGun = new GunWorldPistol(this.x + (this.width / 2), this.y + (this.height / 4), true);
                     this.playerGun.playerHolding = this;
                 }
+                else if(((GunWorldGun)(ents.get(i))).gunID == GunID.shotgun)
+                {
+                    this.playerGun = new GunWorldShotgun(this.x + (this.width / 2), this.y + (this.height / 4), true);
+                    this.playerGun.playerHolding = this;
+                }
                 ents.remove(i);
             }
             
